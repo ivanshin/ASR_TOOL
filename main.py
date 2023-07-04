@@ -1,6 +1,7 @@
 from components.configs_reader import read_configs
 from components.watchdog_daemon import create_observer
 from components.noisereducer import cleaner_worker
+from components.transcriber import transcriber_worker
 from time import sleep
 import multiprocessing as mp
 
@@ -27,11 +28,16 @@ if __name__ == '__main__':
     watchdog_transcribe_proc.daemon= True
     watchdog_transcribe_proc.start()
     # 4) Russian wav2vec implementation
-    #transcriber = 
+    transcriber_proc = mp.Process(target= transcriber_worker, args= (APP_CONFIGS, queue_to_transcribe))
+    transcriber_proc.daemon= True
+    transcriber_proc.start() 
     try:
         while True:
             pass
     except KeyboardInterrupt:
         watchdog_cleaner_proc.terminate()
         cleaner.terminate()
+        watchdog_transcribe_proc.terminate()
+        transcriber_proc.terminate()
+
 

@@ -17,7 +17,7 @@ def reduce_noise(path_to_audio_file: Union[Text,Path], output_dir: Union[Text,Pa
     sound = AudioSegment.from_file(path_to_audio_file).set_channels(1)
     #sound.export("/output/path.wav", format="wav")
     rate = sound.frame_rate
-    reduced_noise = nr.reduce_noise(y=sound.get_array_of_samples(), sr=rate)
+    reduced_noise = nr.reduce_noise(y=sound.get_array_of_samples(), sr=rate, prop_decrease= 0.1)
     ts = str(datetime.timestamp(datetime.now()) * 1000).split('.')[0]
     wavfile.write(os.path.join(output_dir, ts + "_" + file_name), rate, reduced_noise)
     return None
@@ -27,6 +27,6 @@ def cleaner_worker(configs_dict, queue) -> None:
     while True:
         if not queue.empty():
             f_path = queue.get()
-            reduce_noise(f_path, configs_dict['clean_audio dir'])
+            reduce_noise(f_path, configs_dict['clean_audio_dir'])
             os.remove(f_path)
         pass

@@ -13,6 +13,8 @@ def create_dirs(configs_dict: Dict) -> None:
     if  not os.path.exists(clean_audio_path):
         os.makedirs(clean_audio_path)
     configs_dict['clean_audio_dir'] = clean_audio_path
+    if  not os.path.exists(configs_dict['output_dir']):
+        os.makedirs(configs_dict['output_dir'])
     return
 
 def validate(configs_dict: Dict) -> None:
