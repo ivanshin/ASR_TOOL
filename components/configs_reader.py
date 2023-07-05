@@ -4,8 +4,17 @@
 """
 from typing import Text, Union, Dict
 from pathlib import Path
+from pydantic import BaseModel
 import os
 import yaml
+
+# Base model for configuration file
+class ConfigStructure(BaseModel):
+    working_dir: Union[Text,Path]
+    output_dir: Union[Text,Path]
+    class Config:
+        extra = 'forbid'
+
 
 def create_dirs(configs_dict: Dict) -> None:
     """ Create necessary directories """
@@ -18,8 +27,7 @@ def create_dirs(configs_dict: Dict) -> None:
     return
 
 def validate(configs_dict: Dict) -> None:
-    #TODO: using Pydantic validate config dictionary
-    # https://stackoverflow.com/questions/45812387/how-to-validate-structure-or-schema-of-dictionary-in-python
+    valid_conf_model = ConfigStructure(**configs_dict)
     return
 
 def read_configs(config_file: Union[Text,Path] = "config.yaml") -> Dict:
