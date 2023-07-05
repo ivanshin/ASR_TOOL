@@ -1,3 +1,5 @@
 #YAML
 working_dir: D:\\WAV2VEC_ASR_WD\
 output_dir: D:\\WAV2VEC_ASR_OUPUT\
+logs_to_db: True # False
+logs_db_path: D:\\WAV2VEC_ASR_DB\ # set path where to store SQLite DB if logs_to_db = True| else None

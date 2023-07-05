@@ -2,12 +2,15 @@ from components.configs_reader import read_configs
 from components.watchdog_daemon import create_observer
 from components.noisereducer import cleaner_worker
 from components.transcriber import transcriber_worker
-from time import sleep
+from components.logs_writer import configure_loger
 import multiprocessing as mp
+import os
+import logging
 
 #TODO: Add logging to simple DB, example:
 #(https://stackoverflow.com/questions/2314307/python-logging-to-database)
 APP_CONFIGS = read_configs() # read configuration file
+logger = configure_loger(APP_CONFIGS)
 
 if __name__ == '__main__':
     # variables
@@ -31,7 +34,8 @@ if __name__ == '__main__':
     # 4) Russian wav2vec implementation
     transcriber_proc = mp.Process(target= transcriber_worker, args= (APP_CONFIGS, queue_to_transcribe))
     transcriber_proc.daemon= True
-    transcriber_proc.start() 
+    transcriber_proc.start()
+    logger.info('Startup success')
     try:
         while True:
             pass
@@ -40,5 +44,6 @@ if __name__ == '__main__':
         cleaner.terminate()
         watchdog_transcribe_proc.terminate()
         transcriber_proc.terminate()
+        logger.info('All processes terminated')
 
 
