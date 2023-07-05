@@ -4,15 +4,11 @@ from components.noisereducer import cleaner_worker
 from components.transcriber import transcriber_worker
 from components.logs_writer import configure_loger
 import multiprocessing as mp
-import os
-import logging
 
-#TODO: Add logging to simple DB, example:
-#(https://stackoverflow.com/questions/2314307/python-logging-to-database)
-APP_CONFIGS = read_configs() # read configuration file
-logger = configure_loger(APP_CONFIGS)
+APP_CONFIGS = read_configs() # read and validate configuration file
 
 if __name__ == '__main__':
+    logger = configure_loger(APP_CONFIGS)
     # variables
     queue_to_cleaning = mp.Queue()
     queue_to_transcribe = mp.Queue()
