@@ -8,6 +8,11 @@ import os
 import logging
 
 def configure_loger(APP_CONFIGS) -> logging.Logger:
+    logger = logging.getLogger(__name__)
+    logger.setLevel(logging.INFO)
+
+    attributes_list = ['asctime', 'levelname', 'message']
+    formatter = logging.Formatter('%(' + ((')s' + db_logs_handler.DEFAULT_SEPARATOR + '%(').join(attributes_list)) + ')s')
 
     if APP_CONFIGS['logs_to_db'] == True:
         database =  os.path.join(APP_CONFIGS['logs_db_path'], 'LOGS.db')
@@ -16,12 +21,6 @@ def configure_loger(APP_CONFIGS) -> logging.Logger:
         sql_handler.setLevel(logging.INFO)
         sql_handler.setFormatter(formatter)
         logger.addHandler(sql_handler)
-
-    logger = logging.getLogger(__name__)
-    logger.setLevel(logging.INFO)
-
-    attributes_list = ['asctime', 'levelname', 'message'] 
-    formatter = logging.Formatter('%(' + ((')s' + db_logs_handler.DEFAULT_SEPARATOR + '%(').join(attributes_list)) + ')s')
 
     console_handler = logging.StreamHandler()
     console_handler.setLevel(logging.DEBUG)

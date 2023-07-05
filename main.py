@@ -5,6 +5,8 @@ from components.transcriber import transcriber_worker
 from components.logs_writer import configure_loger
 import multiprocessing as mp
 
+#TODO: Create correct multiprocessing logging mechanism
+# (https://stackoverflow.com/questions/641420/how-should-i-log-while-using-multiprocessing-in-python)
 APP_CONFIGS = read_configs() # read and validate configuration file
 
 if __name__ == '__main__':
@@ -20,7 +22,7 @@ if __name__ == '__main__':
     watchdog_cleaner_proc.start()
     #watchdog_proc.join()
     # 2) cleaner
-    cleaner = mp.Process(target= cleaner_worker, args= (APP_CONFIGS, queue_to_cleaning))
+    cleaner = mp.Process(target= cleaner_worker, args= (APP_CONFIGS, queue_to_cleaning, logger))
     cleaner.daemon= True
     cleaner.start()
     # 3) watchdog with queue to transcribation
@@ -28,7 +30,7 @@ if __name__ == '__main__':
     watchdog_transcribe_proc.daemon= True
     watchdog_transcribe_proc.start()
     # 4) Russian wav2vec implementation
-    transcriber_proc = mp.Process(target= transcriber_worker, args= (APP_CONFIGS, queue_to_transcribe))
+    transcriber_proc = mp.Process(target= transcriber_worker, args= (APP_CONFIGS, queue_to_transcribe, logger))
     transcriber_proc.daemon= True
     transcriber_proc.start()
     logger.info('Startup success')
