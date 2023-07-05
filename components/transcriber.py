@@ -19,14 +19,14 @@ def transcribe_audio(
         json.dump(transcription, out_file, ensure_ascii= False)
     return None
 
-def transcriber_worker(configs_dict, queue, logger) -> None:
+def transcriber_worker(configs_dict, queue, logs_queue) -> None:
     """ Daemon cleaner worker """
     model = SpeechRecognitionModel("jonatasgrosman/wav2vec2-large-xlsr-53-russian")
     while True:
         if not queue.empty():
             f_path = queue.get()
-            logger.info(f'{f_path} Transcribe start')
+            logs_queue.put((f'{f_path} Transcribe start'))
             transcribe_audio(f_path, configs_dict['output_dir'], model)
-            logger.info(f'{f_path} Transcribe end')
+            logs_queue.put(f'{f_path} Transcribe end')
             os.remove(f_path)
         pass
