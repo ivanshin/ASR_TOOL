@@ -5,7 +5,8 @@ from components.transcriber import transcriber_worker
 from time import sleep
 import multiprocessing as mp
 
-
+#TODO: Add logging to simple DB, example:
+#(https://stackoverflow.com/questions/2314307/python-logging-to-database)
 APP_CONFIGS = read_configs() # read configuration file
 
 if __name__ == '__main__':
