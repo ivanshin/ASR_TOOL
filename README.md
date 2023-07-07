@@ -34,7 +34,6 @@ this will start necessary daemons. IMPORTANT -- closing main process kills daemo
 
 5) Wait for results in `output_dir` you set. 
 
-## Addition:
+## Additions:
 
-Example of SQLite DB ():
-[Logs DB example](docs\db_example.png)
+[Example of SQLite DB](docs/db_example.png)
