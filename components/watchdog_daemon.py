@@ -1,5 +1,6 @@
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
+import mimetypes as mime
 
 """ Create Handler for new audio files in working directory"""
 class AudioFilesHandler(FileSystemEventHandler):
@@ -9,7 +10,7 @@ class AudioFilesHandler(FileSystemEventHandler):
 
     def on_created(self, event):
         #if event.is_directory == False:
-        if event:
+        if event and ('audio' in mime.guess_type(event.src_path)[0]):
             self.queue.put(event.src_path)
             print("added_to_queue", event.src_path)
 

@@ -10,6 +10,8 @@ from datetime import datetime, timezone
 import os
 import noisereduce as nr
 
+SERVICE_NAME = 'NOISE_CLEANER'
+
 def reduce_noise(path_to_audio_file: Union[Text,Path], output_dir: Union[Text,Path]) -> None:
     """ Reduce noize from single audio file """
 
@@ -22,11 +24,13 @@ def reduce_noise(path_to_audio_file: Union[Text,Path], output_dir: Union[Text,Pa
     wavfile.write(os.path.join(output_dir, ts + "_" + file_name), rate, reduced_noise)
     return None
 
-def cleaner_worker(configs_dict, queue) -> None:
+def cleaner_worker(configs_dict, queue, logs_queue) -> None:
     """ Daemon cleaner worker """
     while True:
         if not queue.empty():
             f_path = queue.get()
+            logs_queue.put(f'{f_path} Clean start' + '|' + SERVICE_NAME)
             reduce_noise(f_path, configs_dict['clean_audio_dir'])
+            logs_queue.put(f'{f_path} Clean end'+'|' + SERVICE_NAME)
             os.remove(f_path)
         pass
