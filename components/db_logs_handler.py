@@ -29,7 +29,6 @@ class SQLiteHandler(logging.Handler):
 
         # Create table if needed
         create_table_sql = 'CREATE TABLE IF NOT EXISTS ' + self.table + ' (' + ((' ' + DEFAULT_DATA_TYPE + ', ').join(self.attributes)) + ' ' + DEFAULT_DATA_TYPE + ');'
-        #print(create_table_sql)
         conn = sqlite3.connect(self.database)
         conn.execute(create_table_sql)
         conn.commit()

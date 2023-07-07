@@ -4,9 +4,8 @@ from components.noisereducer import cleaner_worker
 from components.transcriber import transcriber_worker
 from components.logs_writer import configure_loger
 import multiprocessing as mp
+import logging 
 
-#TODO: Create correct multiprocessing logging mechanism
-# (https://stackoverflow.com/questions/641420/how-should-i-log-while-using-multiprocessing-in-python)
 APP_CONFIGS = read_configs() # read and validate configuration file
 
 if __name__ == '__main__':
@@ -34,16 +33,17 @@ if __name__ == '__main__':
     transcriber_proc = mp.Process(target= transcriber_worker, args= (APP_CONFIGS, queue_to_transcribe, logs_queue))
     transcriber_proc.daemon= True
     transcriber_proc.start()
-    logger.info('Startup success')
+    logging.LoggerAdapter(logger, {'service_name': 'MAIN'}).info('Startup success')
     try:
         while True:
-            logger.info(logs_queue.get())
+            message= logs_queue.get().split('|')
+            logging.LoggerAdapter(logger, {'service_name': f'{message[1]}'}).info(message[0])
             pass
     except KeyboardInterrupt:
         watchdog_cleaner_proc.terminate()
         cleaner.terminate()
         watchdog_transcribe_proc.terminate()
         transcriber_proc.terminate()
-        logger.info('All processes terminated')
+        logging.LoggerAdapter(logger, {'service_name': 'MAIN'}).info('All processes terminated')
 
 

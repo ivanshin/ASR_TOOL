@@ -7,6 +7,8 @@ from huggingsound import SpeechRecognitionModel
 import json
 import os
 
+SERVICE_NAME = 'TRANSCRIBER'
+
 def transcribe_audio(
     path_to_audio_file: Union[Text,Path],
     output_dir: Union[Text,Path], 
@@ -25,8 +27,8 @@ def transcriber_worker(configs_dict, queue, logs_queue) -> None:
     while True:
         if not queue.empty():
             f_path = queue.get()
-            logs_queue.put((f'{f_path} Transcribe start'))
+            logs_queue.put(f'{f_path} Transcribe start' + '|' + SERVICE_NAME)
             transcribe_audio(f_path, configs_dict['output_dir'], model)
-            logs_queue.put(f'{f_path} Transcribe end')
+            logs_queue.put(f'{f_path} Transcribe end' + '|' + SERVICE_NAME)
             os.remove(f_path)
         pass
