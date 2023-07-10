@@ -20,8 +20,8 @@ if __name__ == '__main__':
     watchdog_cleaner_proc = mp.Process(target= create_observer, args= (APP_CONFIGS['working_dir'], queue_to_cleaning))
     watchdog_cleaner_proc.daemon= True
     watchdog_cleaner_proc.start()
-    #watchdog_proc.join()
-    # 2) cleaner
+    ##watchdog_proc.join()
+    ## 2) cleaner
     cleaner = mp.Process(target= cleaner_worker, args= (APP_CONFIGS, queue_to_cleaning, logs_queue))
     cleaner.daemon= True
     cleaner.start()
