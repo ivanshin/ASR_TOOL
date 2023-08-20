@@ -4,6 +4,7 @@
 from typing import Text, Union
 from pathlib import Path
 from huggingsound import SpeechRecognitionModel
+import signal
 import whisper
 import torch
 import json
@@ -25,20 +26,22 @@ def transcribe_audio(
         json.dump(transcription, out_file, ensure_ascii= False)
     return None
 
-def transcriber_worker(configs_dict, queue, logs_queue) -> None:
+
+def transcriber_worker(configs_dict, queue, logs_queue, device) -> None:
     """ Daemon cleaner worker """
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     #check or load model
-    model = whisper.load_model("large-v2", device)
-    #model = whisper.load_model("medium", device)
-    #model = SpeechRecognitionModel("jonatasgrosman/wav2vec2-large-xlsr-53-russian", device)
+    try:
+        model = whisper.load_model(configs_dict.model, torch.device(device))
+    except RuntimeError as e:
+        print(e)
+        os.kill(os.getppid(), signal.SIGTERM) # kill parent proc
     f_path = []
     while True:
         if not queue.empty():
             f_path = queue.get()
-            logs_queue.put(f'{f_path} Transcribe start' + '|' + SERVICE_NAME)
-            transcribe_audio(f_path, configs_dict['output_dir'], model)
-            logs_queue.put(f'{f_path} Transcribe end' + '|' + SERVICE_NAME)
+            logs_queue.put(f'{f_path} Transcribe start' + '|' + SERVICE_NAME + f'_on_{device}_{os.getpid()}')
+            transcribe_audio(f_path, configs_dict.output_dir, model)
+            logs_queue.put(f'{f_path} Transcribe end' + '|' + SERVICE_NAME + f'_on_{device}')
             torch.cuda.empty_cache()
             gc.collect()
             os.remove(f_path)

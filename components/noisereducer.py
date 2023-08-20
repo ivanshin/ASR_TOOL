@@ -32,7 +32,7 @@ def cleaner_worker(configs_dict, queue, logs_queue) -> None:
         if not queue.empty():
             f_path = queue.get()
             logs_queue.put(f'{f_path} Clean start' + '|' + SERVICE_NAME)
-            reduce_noise(f_path, configs_dict['clean_audio_dir'])
+            reduce_noise(f_path, configs_dict.clean_audio_dir)
             logs_queue.put(f'{f_path} Clean end'+'|' + SERVICE_NAME)
             os.remove(f_path)
         pass

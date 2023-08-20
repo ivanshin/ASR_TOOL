@@ -1,5 +1,20 @@
 #YAML
+# [directories settings]
 working_dir: /media/ivan/Диск/WAV2VEC_WD
 output_dir: /media/ivan/Диск/WAV2VEC_OUTPUT
+
+# [transcriber settings]
+model: #large-v2 # 'tiny' by default if blank (Whisper model settings)
+
+# [multiple GPU support]
+devices:
+  - cpu
+  # set your cuda devices:  #- cuda:0
+                            #- cuda:1 
+  # OR
+  #set blank if CPU (set same device multiple times to spawn more workers:   #- cpu
+                                                                             #- cpu)
+
+# [logging settings]
 logs_to_db: True # False
 logs_db_path: /media/ivan/Диск/WAV2VEC_DB # set path where to store SQLite DB if logs_to_db = True| else None
