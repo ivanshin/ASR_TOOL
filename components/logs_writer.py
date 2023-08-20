@@ -13,9 +13,9 @@ def configure_loger(APP_CONFIGS) -> logging.Logger:
     attributes_list = ['asctime', 'levelname', 'service_name', 'message']
     formatter = logging.Formatter('%(' + ((')s' + db_logs_handler.DEFAULT_SEPARATOR + '%(').join(attributes_list)) + ')s')
 
-    if APP_CONFIGS['logs_to_db'] == True:
+    if APP_CONFIGS.logs_to_db == True:
         logger.propagate = False
-        database =  os.path.join(APP_CONFIGS['logs_db_path'], 'LOGS.db')
+        database =  os.path.join(APP_CONFIGS.logs_db_path, 'LOGS.db')
         table = 'asr_logs'
         sql_handler = db_logs_handler.SQLiteHandler(database = database, table = table, attributes_list = attributes_list)
         sql_handler.setLevel(logging.INFO)
